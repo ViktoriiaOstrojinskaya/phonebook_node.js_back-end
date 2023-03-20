@@ -9,7 +9,6 @@ const {
 const {
   newContactSchema,
   updateContactSchema,
-  favoriteContactSchema,
 } = require("../../models/contact");
 
 router.get("/", authMiddleware, ctrl.getAll);
@@ -31,14 +30,6 @@ router.put(
   isValidId,
   validateBody(updateContactSchema),
   ctrl.updateById
-);
-
-router.patch(
-  "/:contactId/favorite",
-  authMiddleware,
-  isValidId,
-  validateBody(favoriteContactSchema),
-  ctrl.updateStatusContact
 );
 
 module.exports = router;

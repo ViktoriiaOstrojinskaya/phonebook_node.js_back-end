@@ -3,6 +3,9 @@ const Joi = require("joi");
 
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+    },
     password: {
       type: String,
       required: [true, "Set password for user"],
@@ -12,24 +15,7 @@ const userSchema = new Schema(
       required: [true, "Email is required"],
       unique: true,
     },
-    subscription: {
-      type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
-    },
     token: String,
-    avatarURL: {
-      type: String,
-      require: true,
-    },
-    verify: {
-      type: Boolean,
-      default: false,
-    },
-    verificationToken: {
-      type: String,
-      required: [true, "Verify token is required"],
-    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -37,6 +23,7 @@ const userSchema = new Schema(
 const User = model("user", userSchema);
 
 const userJoiSchema = Joi.object({
+  name: Joi.string(),
   password: Joi.string().min(6).alphanum().required(),
   email: Joi.string()
     .email({
@@ -46,28 +33,10 @@ const userJoiSchema = Joi.object({
       },
     })
     .required(),
-  subscription: Joi.string().valid("starter", "pro", "business"),
   token: Joi.string(),
-});
-
-const verifyEmailJoiSchema = Joi.object({
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: {
-        allow: ["com", "net"],
-      },
-    })
-    .required()
-});
-
-const subscriptionUserSchema = Joi.object({
-  subscription: Joi.string().valid("starter", "pro", "business").required(),
 });
 
 module.exports = {
   User,
   userJoiSchema,
-  subscriptionUserSchema,
-  verifyEmailJoiSchema
 };
