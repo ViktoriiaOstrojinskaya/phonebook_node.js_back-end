@@ -16,11 +16,13 @@ const register = async (req, res) => {
     bcryptjs.genSaltSync(10)
   );
   const newUser = await User.create({
-    name,
-    email,
+    ...req.body,
     password: hashPassword,
   });
+  const token = jwt.sign({ id: newUser._id }, SECRET_KEY, { expiresIn: "2h" });
+  await User.findByIdAndUpdate(newUser._id, { token });
   res.status(201).json({
+    token,
     user: {
       name: newUser.name,
       email: newUser.email,
@@ -42,7 +44,7 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "20h" });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "2h" });
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token,
