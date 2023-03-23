@@ -20,8 +20,6 @@ const register = async (req, res) => {
     name,
     password: hashPassword,
   });
-  // const token = jwt.sign({ id: newUser._id }, SECRET_KEY, { expiresIn: "2h" });
-  // await User.findByIdAndUpdate(newUser._id, { token });
   res.status(201).json({
     user: {
       name: newUser.name,
